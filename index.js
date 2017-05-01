@@ -44,8 +44,8 @@ function addMockApi(r){
   r.resources && r.resources.forEach(addMockApi)
 }
 
-raml2obj.parse('examples/marathon/api.raml').then(function(ramlObj) {
+raml2obj.parse('examples/marathon/api.raml').then((ramlObj) => {
   ramlObj.resources && ramlObj.resources.forEach(addMockApi)
   app.listen(3000)
-  console.log('pampas api mocker started')
+  console.log('pampas api mocker started, listen on 3000')
 })
