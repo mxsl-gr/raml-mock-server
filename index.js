@@ -4,11 +4,13 @@ const app = express()
 
 const paramUrlRegex = /\{([^\{]*)\}/g
 
+// TODO param enum
 function addMockApi(r){
   let apiPath = r.parentUrl + r.relativeUri
   apiPath = apiPath.replace(paramUrlRegex, ':$1')
   r.methods && r.methods.forEach((m) => {
     const responseMap = {}
+    console.log(m.method, apiPath)
     m.responses && m.responses.forEach(response => {
       if(response.body && response.body[0].examples){
         responseMap[response.code] = response.body[0].examples[0].value
@@ -17,7 +19,6 @@ function addMockApi(r){
         responseMap[response.code] = {}
       }
     })
-    console.log(m.method, apiPath)
     app[m.method](apiPath, (req, res) => {
       const code = req.query['__code']
       m.allUriParameters && m.allUriParameters.forEach(uriParam => {
@@ -43,8 +44,7 @@ function addMockApi(r){
   r.resources && r.resources.forEach(addMockApi)
 }
 
-// TODO param enum
-raml2obj.parse('api/api.raml').then(function(ramlObj) {
+raml2obj.parse('examples/marathon/api.raml').then(function(ramlObj) {
   ramlObj.resources && ramlObj.resources.forEach(addMockApi)
   app.listen(3000)
   console.log('pampas api mocker started')
